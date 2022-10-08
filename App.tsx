@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface todos {
   [key: string]: todo;
@@ -20,6 +21,8 @@ interface todo {
 
 type category = string;
 type text = string;
+
+const STORAGE_KEY = "@todos";
 
 export default function App() {
   const [category, setCategory] = useState<category>("todo");
@@ -40,16 +43,40 @@ export default function App() {
     setText(text);
   };
 
-  const addTodo = () => {
+  const saveTodos = async (newTodos: todos) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newTodos));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const loadTodos = async () => {
+    try {
+      const json = await AsyncStorage.getItem(STORAGE_KEY);
+      if (json !== null) {
+        const obj = JSON.parse(json);
+        setTodos(obj);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addTodo = async () => {
     if (text === "") {
       return;
     }
     //const newTodos = Object.assign({}, todos, {[Date.now()]: { text, category }});
     const newTodos: todos = { ...todos, [Date.now()]: { text, category } };
     setTodos(newTodos);
+    await saveTodos(newTodos);
     setText("");
   };
-  console.log(todos);
+
+  useEffect(() => {
+    loadTodos();
+  }, []);
 
   return (
     <View style={styles.container}>
