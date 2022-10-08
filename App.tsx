@@ -311,6 +311,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   completeView: {
     marginVertical: 5,
