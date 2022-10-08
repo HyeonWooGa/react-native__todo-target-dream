@@ -19,6 +19,7 @@ interface todos {
 interface todo {
   text: text;
   category: category;
+  complete?: Boolean;
 }
 
 type category = string;
@@ -93,6 +94,39 @@ export default function App() {
     ]);
   };
 
+  const onTextPress = (id: id) => {
+    Alert.alert("항목 수정/완료", "수정 혹은 완료 하시겠습니까?", [
+      { text: "취소" },
+      { text: "수정", onPress: async () => updateTodo(id) },
+      { text: "완료", onPress: () => completeTodo(id) },
+    ]);
+  };
+
+  const updateTodo = (id: id) => {};
+
+  const completeTodo = (id: id) => {
+    Alert.alert("항목 완료", "정말 완료하셨습니까?", [
+      {
+        text: "아직",
+        onPress: async () => {
+          const newTodos = { ...todos };
+          newTodos[id].complete = false;
+          setTodos(newTodos);
+          await saveTodos(newTodos);
+        },
+      },
+      {
+        text: "완료",
+        onPress: async () => {
+          const newTodos = { ...todos };
+          newTodos[id].complete = true;
+          setTodos(newTodos);
+          await saveTodos(newTodos);
+        },
+      },
+    ]);
+  };
+
   useEffect(() => {
     loadTodos();
   }, []);
@@ -159,13 +193,27 @@ export default function App() {
         <ScrollView>
           {Object.keys(todos).map((key) =>
             todos[key].category === category ? (
-              <View style={styles.todoView} key={key}>
-                <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
+              <View
+                style={
+                  todos[key].complete ? styles.completeView : styles.todoView
+                }
+                key={key}
+              >
+                <Pressable
+                  onPress={() => onTextPress(key)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+                >
+                  <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
+                </Pressable>
                 <Pressable
                   onPress={() => deleteTodo(key)}
                   style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
                 >
-                  <Fontisto name="trash" size={24} color="gray" />
+                  <Fontisto
+                    name="trash"
+                    size={24}
+                    color={todos[key].complete ? "black" : "gray"}
+                  />
                 </Pressable>
               </View>
             ) : null
@@ -202,6 +250,16 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     backgroundColor: "#355764",
+    borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  completeView: {
+    marginBottom: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "gray",
     borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
