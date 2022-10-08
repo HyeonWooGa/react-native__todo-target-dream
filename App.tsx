@@ -28,6 +28,7 @@ type text = string;
 type id = string;
 
 const STORAGE_KEY = "@todos";
+const CATEGORY_KEY = "@category";
 
 export default function App() {
   const [category, setCategory] = useState<category>("todo");
@@ -36,13 +37,39 @@ export default function App() {
   const [todos, setTodos] = useState<todos>({});
 
   const todo = () => {
-    setCategory("todo");
+    try {
+      setCategory("todo");
+      AsyncStorage.setItem(CATEGORY_KEY, "todo");
+    } catch (error) {
+      console.error(error);
+    }
   };
   const target = () => {
-    setCategory("target");
+    try {
+      setCategory("target");
+      AsyncStorage.setItem(CATEGORY_KEY, "target");
+    } catch (error) {
+      console.error(error);
+    }
   };
   const dream = () => {
-    setCategory("dream");
+    try {
+      setCategory("dream");
+      AsyncStorage.setItem(CATEGORY_KEY, "dream");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const loadCategory = async () => {
+    try {
+      const json = await AsyncStorage.getItem(CATEGORY_KEY);
+      if (json !== null) {
+        setCategory(json);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onChangeText = (text: text) => {
@@ -160,6 +187,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    loadCategory();
     loadTodos();
   }, []);
 
