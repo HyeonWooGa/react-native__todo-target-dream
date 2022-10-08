@@ -20,6 +20,7 @@ interface todo {
   text: text;
   category: category;
   complete?: Boolean;
+  isUpdating?: Boolean;
 }
 
 type category = string;
@@ -31,6 +32,7 @@ const STORAGE_KEY = "@todos";
 export default function App() {
   const [category, setCategory] = useState<category>("todo");
   const [text, setText] = useState<text>("");
+  const [textUpdate, setTextUpdate] = useState<text>("");
   const [todos, setTodos] = useState<todos>({});
 
   const todo = () => {
@@ -45,6 +47,10 @@ export default function App() {
 
   const onChangeText = (text: text) => {
     setText(text);
+  };
+
+  const onChangeTextUpdate = (textUpdate: text) => {
+    setTextUpdate(textUpdate);
   };
 
   const saveTodos = async (newTodos: todos) => {
@@ -102,7 +108,33 @@ export default function App() {
     ]);
   };
 
-  const updateTodo = (id: id) => {};
+  const cancelUpdate = async (id: id) => {
+    const newTodos = { ...todos };
+    newTodos[id].isUpdating = false;
+    setTextUpdate("");
+    setTodos(newTodos);
+    await saveTodos(newTodos);
+  };
+
+  const updateTodo = async (id: id) => {
+    const newTodos = { ...todos };
+    newTodos[id].isUpdating = true;
+    setTextUpdate(newTodos[id].text);
+    setTodos(newTodos);
+    await saveTodos(newTodos);
+  };
+
+  const updateTodoSubmit = async (id: id) => {
+    if (textUpdate === "") {
+      return;
+    }
+    const newTodos = { ...todos };
+    newTodos[id].text = textUpdate;
+    newTodos[id].isUpdating = false;
+    setTextUpdate("");
+    setTodos(newTodos);
+    await saveTodos(newTodos);
+  };
 
   const completeTodo = (id: id) => {
     Alert.alert("항목 완료", "정말 완료하셨습니까?", [
@@ -193,28 +225,49 @@ export default function App() {
         <ScrollView>
           {Object.keys(todos).map((key) =>
             todos[key].category === category ? (
-              <View
-                style={
-                  todos[key].complete ? styles.completeView : styles.todoView
-                }
-                key={key}
-              >
-                <Pressable
-                  onPress={() => onTextPress(key)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+              <View key={key}>
+                <View
+                  style={
+                    todos[key].complete ? styles.completeView : styles.todoView
+                  }
                 >
-                  <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => deleteTodo(key)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
-                >
-                  <Fontisto
-                    name="trash"
-                    size={24}
-                    color={todos[key].complete ? "black" : "gray"}
-                  />
-                </Pressable>
+                  <Pressable
+                    onPress={() => onTextPress(key)}
+                    style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+                  >
+                    <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => deleteTodo(key)}
+                    style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+                  >
+                    <Fontisto
+                      name="trash"
+                      size={24}
+                      color={todos[key].complete ? "black" : "gray"}
+                    />
+                  </Pressable>
+                </View>
+                {todos[key].isUpdating ? (
+                  <View style={styles.updateView}>
+                    <TextInput
+                      style={styles.inputUpdate}
+                      placeholder={`Update ${todos[key].category}`}
+                      placeholderTextColor="white"
+                      value={textUpdate}
+                      onChangeText={onChangeTextUpdate}
+                      onSubmitEditing={async () => updateTodoSubmit(key)}
+                    />
+                    <Pressable
+                      onPress={() => cancelUpdate(key)}
+                      style={({ pressed }) => [
+                        { opacity: pressed ? 0.3 : 1.0 },
+                      ]}
+                    >
+                      <Fontisto name="close-a" size={18} color="white" />
+                    </Pressable>
+                  </View>
+                ) : null}
               </View>
             ) : null
           )}
@@ -245,8 +298,17 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     fontSize: 18,
   },
+  inputUpdate: {
+    backgroundColor: "gray",
+    color: "white",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginBottom: 5,
+    fontSize: 18,
+  },
   todoView: {
-    marginBottom: 10,
+    marginVertical: 5,
     paddingVertical: 20,
     paddingHorizontal: 20,
     backgroundColor: "#355764",
@@ -266,4 +328,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   todoText: { color: "white", fontSize: 18, fontWeight: "500" },
+  updateView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
 });
