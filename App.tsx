@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   completeView: {
-    marginBottom: 10,
+    marginVertical: 5,
     paddingVertical: 20,
     paddingHorizontal: 20,
     backgroundColor: "gray",
