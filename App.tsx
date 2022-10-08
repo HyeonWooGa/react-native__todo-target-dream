@@ -6,12 +6,25 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 
+interface todos {
+  [key: string]: todo;
+}
+
+interface todo {
+  text: text;
+  category: category;
+}
+
+type category = string;
+type text = string;
+
 export default function App() {
-  const [category, setCategory] = useState("todo");
-  const [text, setText] = useState("");
-  const [todos, setTodos] = useState({});
+  const [category, setCategory] = useState<category>("todo");
+  const [text, setText] = useState<text>("");
+  const [todos, setTodos] = useState<todos>({});
 
   const todo = () => {
     setCategory("todo");
@@ -23,7 +36,7 @@ export default function App() {
     setCategory("dream");
   };
 
-  const onChangeText = (text: string) => {
+  const onChangeText = (text: text) => {
     setText(text);
   };
 
@@ -32,7 +45,7 @@ export default function App() {
       return;
     }
     //const newTodos = Object.assign({}, todos, {[Date.now()]: { text, category }});
-    const newTodos = { ...todos, [Date.now()]: { text, category } };
+    const newTodos: todos = { ...todos, [Date.now()]: { text, category } };
     setTodos(newTodos);
     setText("");
   };
@@ -88,6 +101,15 @@ export default function App() {
           value={text}
           onSubmitEditing={addTodo}
         />
+        <ScrollView>
+          {Object.keys(todos).map((key) =>
+            todos[key].category === category ? (
+              <View style={styles.todoView} key={key}>
+                <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
+              </View>
+            ) : null
+          )}
+        </ScrollView>
       </View>
     </View>
   );
@@ -111,7 +133,15 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    marginTop: 30,
+    marginVertical: 30,
     fontSize: 18,
   },
+  todoView: {
+    marginBottom: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "#355764",
+    borderRadius: 15,
+  },
+  todoText: { color: "white", fontSize: 18, fontWeight: "500" },
 });
