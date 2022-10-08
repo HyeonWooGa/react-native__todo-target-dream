@@ -4,10 +4,10 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   TextInput,
   ScrollView,
   Alert,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Fontisto } from "@expo/vector-icons";
@@ -101,7 +101,10 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <TouchableOpacity onPress={todo}>
+        <Pressable
+          onPress={todo}
+          style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+        >
           <Text
             style={{
               ...styles.btnText,
@@ -110,8 +113,11 @@ export default function App() {
           >
             Todo
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={target}>
+        </Pressable>
+        <Pressable
+          onPress={target}
+          style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+        >
           <Text
             style={{
               ...styles.btnText,
@@ -120,8 +126,11 @@ export default function App() {
           >
             Target
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={dream}>
+        </Pressable>
+        <Pressable
+          onPress={dream}
+          style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+        >
           <Text
             style={{
               ...styles.btnText,
@@ -130,7 +139,7 @@ export default function App() {
           >
             Dream
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View>
         <TextInput
@@ -152,9 +161,12 @@ export default function App() {
             todos[key].category === category ? (
               <View style={styles.todoView} key={key}>
                 <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
-                <TouchableOpacity onPress={() => deleteTodo(key)}>
+                <Pressable
+                  onPress={() => deleteTodo(key)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+                >
                   <Fontisto name="trash" size={24} color="gray" />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             ) : null
           )}
