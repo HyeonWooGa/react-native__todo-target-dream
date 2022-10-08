@@ -207,72 +207,68 @@ export default function App() {
           </Text>
         </Pressable>
       </View>
-      <View>
-        <TextInput
-          style={styles.input}
-          placeholder={
-            category === "todo"
-              ? "Todo for Target"
-              : category === "target"
-              ? "Target for Dream"
-              : "Dream for Life"
-          }
-          placeholderTextColor="white"
-          onChangeText={onChangeText}
-          value={text}
-          onSubmitEditing={addTodo}
-        />
-        <ScrollView>
-          {Object.keys(todos).map((key) =>
-            todos[key].category === category ? (
-              <View key={key}>
-                <View
-                  style={
-                    todos[key].complete ? styles.completeView : styles.todoView
-                  }
+      <TextInput
+        style={styles.input}
+        placeholder={
+          category === "todo"
+            ? "Todo for Target"
+            : category === "target"
+            ? "Target for Dream"
+            : "Dream for Life"
+        }
+        placeholderTextColor="white"
+        onChangeText={onChangeText}
+        value={text}
+        onSubmitEditing={addTodo}
+      />
+      <ScrollView>
+        {Object.keys(todos).map((key) =>
+          todos[key].category === category ? (
+            <View key={key}>
+              <View
+                style={
+                  todos[key].complete ? styles.completeView : styles.todoView
+                }
+              >
+                <Pressable
+                  onPress={() => onTextPress(key)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
                 >
+                  <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => deleteTodo(key)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
+                >
+                  <Fontisto
+                    name="trash"
+                    size={24}
+                    color={todos[key].complete ? "black" : "gray"}
+                  />
+                </Pressable>
+              </View>
+              {todos[key].isUpdating ? (
+                <View style={styles.updateView}>
+                  <TextInput
+                    style={styles.inputUpdate}
+                    placeholder={`Update ${todos[key].category}`}
+                    placeholderTextColor="white"
+                    value={textUpdate}
+                    onChangeText={onChangeTextUpdate}
+                    onSubmitEditing={async () => updateTodoSubmit(key)}
+                  />
                   <Pressable
-                    onPress={() => onTextPress(key)}
+                    onPress={() => cancelUpdate(key)}
                     style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
                   >
-                    <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={() => deleteTodo(key)}
-                    style={({ pressed }) => [{ opacity: pressed ? 0.3 : 1.0 }]}
-                  >
-                    <Fontisto
-                      name="trash"
-                      size={24}
-                      color={todos[key].complete ? "black" : "gray"}
-                    />
+                    <Fontisto name="close-a" size={18} color="white" />
                   </Pressable>
                 </View>
-                {todos[key].isUpdating ? (
-                  <View style={styles.updateView}>
-                    <TextInput
-                      style={styles.inputUpdate}
-                      placeholder={`Update ${todos[key].category}`}
-                      placeholderTextColor="white"
-                      value={textUpdate}
-                      onChangeText={onChangeTextUpdate}
-                      onSubmitEditing={async () => updateTodoSubmit(key)}
-                    />
-                    <Pressable
-                      onPress={() => cancelUpdate(key)}
-                      style={({ pressed }) => [
-                        { opacity: pressed ? 0.3 : 1.0 },
-                      ]}
-                    >
-                      <Fontisto name="close-a" size={18} color="white" />
-                    </Pressable>
-                  </View>
-                ) : null}
-              </View>
-            ) : null
-          )}
-        </ScrollView>
-      </View>
+              ) : null}
+            </View>
+          ) : null
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -315,7 +311,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
   },
   completeView: {
     marginBottom: 10,
