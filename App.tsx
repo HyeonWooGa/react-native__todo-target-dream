@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Fontisto } from "@expo/vector-icons";
 
 interface todos {
   [key: string]: todo;
@@ -21,6 +23,7 @@ interface todo {
 
 type category = string;
 type text = string;
+type id = string;
 
 const STORAGE_KEY = "@todos";
 
@@ -72,6 +75,22 @@ export default function App() {
     setTodos(newTodos);
     await saveTodos(newTodos);
     setText("");
+  };
+
+  const deleteTodo = async (id: id) => {
+    Alert.alert("항목 삭제", "정말 삭제하시겠습니까?", [
+      { text: "취소" },
+      {
+        text: "삭제",
+        onPress: async () => {
+          const newTodos = { ...todos };
+          delete newTodos[id];
+          setTodos(newTodos);
+          await saveTodos(newTodos);
+        },
+        style: "destructive",
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -133,6 +152,9 @@ export default function App() {
             todos[key].category === category ? (
               <View style={styles.todoView} key={key}>
                 <Text style={styles.todoText}>{`${todos[key].text}`}</Text>
+                <TouchableOpacity onPress={() => deleteTodo(key)}>
+                  <Fontisto name="trash" size={24} color="gray" />
+                </TouchableOpacity>
               </View>
             ) : null
           )}
@@ -169,6 +191,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "#355764",
     borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   todoText: { color: "white", fontSize: 18, fontWeight: "500" },
 });
