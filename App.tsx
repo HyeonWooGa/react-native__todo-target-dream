@@ -31,9 +31,8 @@ export default function App() {
     if (text === "") {
       return;
     }
-    const newTodos = Object.assign({}, todos, {
-      [Date.now()]: { text, category },
-    });
+    //const newTodos = Object.assign({}, todos, {[Date.now()]: { text, category }});
+    const newTodos = { ...todos, [Date.now()]: { text, category } };
     setTodos(newTodos);
     setText("");
   };
