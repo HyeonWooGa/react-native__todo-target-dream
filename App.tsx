@@ -9,26 +9,35 @@ import {
 } from "react-native";
 
 export default function App() {
-  const [category, setCategory] = useState({
-    todo: true,
-    target: false,
-    dream: false,
-  });
+  const [category, setCategory] = useState("todo");
   const [text, setText] = useState("");
+  const [todos, setTodos] = useState({});
 
   const todo = () => {
-    setCategory({ todo: true, target: false, dream: false });
+    setCategory("todo");
   };
   const target = () => {
-    setCategory({ todo: false, target: true, dream: false });
+    setCategory("target");
   };
   const dream = () => {
-    setCategory({ todo: false, target: false, dream: true });
+    setCategory("dream");
   };
 
   const onChangeText = (text: string) => {
     setText(text);
   };
+
+  const addTodo = () => {
+    if (text === "") {
+      return;
+    }
+    const newTodos = Object.assign({}, todos, {
+      [Date.now()]: { text, category },
+    });
+    setTodos(newTodos);
+    setText("");
+  };
+  console.log(todos);
 
   return (
     <View style={styles.container}>
@@ -38,7 +47,7 @@ export default function App() {
           <Text
             style={{
               ...styles.btnText,
-              color: category.todo ? "white" : "gray",
+              color: category === "todo" ? "white" : "gray",
             }}
           >
             Todo
@@ -48,7 +57,7 @@ export default function App() {
           <Text
             style={{
               ...styles.btnText,
-              color: category.target ? "white" : "gray",
+              color: category === "target" ? "white" : "gray",
             }}
           >
             Target
@@ -58,7 +67,7 @@ export default function App() {
           <Text
             style={{
               ...styles.btnText,
-              color: category.dream ? "white" : "gray",
+              color: category === "dream" ? "white" : "gray",
             }}
           >
             Dream
@@ -69,15 +78,16 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder={
-            category.todo
+            category === "todo"
               ? "Todo for Target"
-              : category.target
+              : category === "target"
               ? "Target for Dream"
               : "Dream for Life"
           }
           placeholderTextColor="white"
           onChangeText={onChangeText}
           value={text}
+          onSubmitEditing={addTodo}
         />
       </View>
     </View>
