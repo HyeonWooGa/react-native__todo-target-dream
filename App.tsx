@@ -139,11 +139,21 @@ export default function App() {
   };
 
   const onTextPress = (id: id) => {
-    Alert.alert("항목 수정/완료", "수정 혹은 완료 하시겠습니까?", [
-      { text: "취소" },
-      { text: "수정", onPress: async () => updateTodo(id) },
-      { text: "완료", onPress: () => completeTodo(id) },
-    ]);
+    if (Platform.OS === "web") {
+      const ok = confirm("정말 완료하셨습니까?");
+      if (ok) {
+        const newTodos = { ...todos };
+        newTodos[id].complete = false;
+        setTodos(newTodos);
+        saveTodos(newTodos);
+      }
+    } else {
+      Alert.alert("항목 수정/완료", "수정 혹은 완료 하시겠습니까?", [
+        { text: "취소" },
+        { text: "수정", onPress: async () => updateTodo(id) },
+        { text: "완료", onPress: () => completeTodo(id) },
+      ]);
+    }
   };
 
   const cancelUpdate = async (id: id) => {
