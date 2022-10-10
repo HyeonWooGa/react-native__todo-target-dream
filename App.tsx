@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   Pressable,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Fontisto } from "@expo/vector-icons";
@@ -112,19 +113,29 @@ export default function App() {
   };
 
   const deleteTodo = async (id: id) => {
-    Alert.alert("항목 삭제", "정말 삭제하시겠습니까?", [
-      { text: "취소" },
-      {
-        text: "삭제",
-        onPress: async () => {
-          const newTodos = { ...todos };
-          delete newTodos[id];
-          setTodos(newTodos);
-          await saveTodos(newTodos);
+    if (Platform.OS === "web") {
+      const ok = confirm("정말 삭제하시겠습니까?");
+      if (ok) {
+        const newTodos = { ...todos };
+        delete newTodos[id];
+        setTodos(newTodos);
+        await saveTodos(newTodos);
+      }
+    } else {
+      Alert.alert("항목 삭제", "정말 삭제하시겠습니까?", [
+        { text: "취소" },
+        {
+          text: "삭제",
+          onPress: async () => {
+            const newTodos = { ...todos };
+            delete newTodos[id];
+            setTodos(newTodos);
+            await saveTodos(newTodos);
+          },
+          style: "destructive",
         },
-        style: "destructive",
-      },
-    ]);
+      ]);
+    }
   };
 
   const onTextPress = (id: id) => {
@@ -323,12 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   inputUpdate: {
-    backgroundColor: "gray",
     color: "white",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginBottom: 5,
     fontSize: 18,
   },
   todoView: {
@@ -356,5 +362,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "gray",
+    borderRadius: 30,
+    marginBottom: 5,
+    flex: 1,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
   },
 });
