@@ -143,7 +143,12 @@ export default function App() {
       const ok = confirm("정말 완료하셨습니까?");
       if (ok) {
         const newTodos = { ...todos };
-        newTodos[id].complete = false;
+        newTodos[id].complete = true;
+        setTodos(newTodos);
+        saveTodos(newTodos);
+      } else {
+        const newTodos = { ...todos };
+        newTodos[id].complete = true;
         setTodos(newTodos);
         saveTodos(newTodos);
       }
