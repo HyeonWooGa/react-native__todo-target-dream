@@ -1,7 +1,7 @@
 {
   "files": {
-    "app.js": "/react-native__todo-target-dream/static/js/app.904d680f.chunk.js",
-    "app.js.map": "/react-native__todo-target-dream/static/js/app.904d680f.chunk.js.map",
+    "app.js": "/react-native__todo-target-dream/static/js/app.4e1e7fcc.chunk.js",
+    "app.js.map": "/react-native__todo-target-dream/static/js/app.4e1e7fcc.chunk.js.map",
     "runtime~app.js": "/react-native__todo-target-dream/static/js/runtime~app.976d1a27.js",
     "runtime~app.js.map": "/react-native__todo-target-dream/static/js/runtime~app.976d1a27.js.map",
     "static/js/2.f3714950.chunk.js": "/react-native__todo-target-dream/static/js/2.f3714950.chunk.js",
@@ -29,6 +29,6 @@
   "entrypoints": [
     "static/js/runtime~app.976d1a27.js",
     "static/js/2.f3714950.chunk.js",
-    "static/js/app.904d680f.chunk.js"
+    "static/js/app.4e1e7fcc.chunk.js"
   ]
 }

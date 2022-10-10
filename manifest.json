@@ -2,8 +2,8 @@
   "background_color": "#000000",
   "display": "standalone",
   "lang": "en",
-  "name": "react-native__todo-target-dream",
-  "short_name": "react-native__todo-target-dream",
+  "name": "Todo -> Target -> Dream - 박연우",
+  "short_name": "Todo -> Target -> Dream - 박연우",
   "start_url": "/?utm_source=web_app_manifest",
   "orientation": "portrait",
   "related_applications": [
